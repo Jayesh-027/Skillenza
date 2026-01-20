@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About Us - Skillenza</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css"/>    
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+      <a class="navbar-brand fw-bold fs-4" href="index.html">SKILLENZA</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link " href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="jobs.html">Job Search</a></li>
+          <li class="nav-item"><a class="nav-link" href="uploadresume.html">Upload Resume</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html">About Us</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact Us</a></li>
+          <li class="nav-item"><a class="btn btn-black ms-2" href="login.html">Login/Signup</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container">
+      <h1>About Skillenza</h1>
+      <p class="lead text-muted">Empowering talent. Connecting potential. Redefining opportunities.</p>
+    </div>
+  </section>
+
+  <!-- Info Sections -->
+  <div class="container py-5">
+    <div class="info-card">
+      <h3>Who We Are</h3>
+      <p>Skillenza is a platform designed to bridge the gap between aspiring professionals and the opportunities they deserve. We are a team of passionate technologists, recruiters, and educators dedicated to reshaping how talent is discovered and nurtured.</p>
+    </div>
+
+    <div class="info-card">
+      <h3>Our Mission</h3>
+      <p>To create a community where skills speak louder than résumés. We believe in potential over pedigree, and we aim to empower individuals with tools, challenges, and exposure to showcase their real-world abilities.</p>
+    </div>
+
+    <div class="info-card">
+      <h3>What We Do</h3>
+      <p>We organize coding challenges, internships, and job opportunities for students and professionals. Our smart matchmaking algorithm connects recruiters with the right talent, ensuring a win-win for both sides of the hiring process.</p>
+    </div>
+  </div>
+
+  <!-- JS -->
+  <script>
+    window.onload = function () {
+      const user = localStorage.getItem("loggedInUser");
+      const loginBtn = document.getElementById("loginBtn");
+      const userDropdown = document.getElementById("userDropdown");
+      const userEmail = document.getElementById("userEmail");
+
+      if (user) {
+        loginBtn.style.display = "none";
+        userDropdown.style.display = "block";
+        userEmail.textContent = user;
+      }
+    };
+
+    function logout() {
+      localStorage.removeItem("loggedInUser");
+      window.location.reload();
+    }
+  </script>
+<script>
+// ==================== NAVBAR LOGIN/LOGOUT HANDLER ====================
+window.addEventListener("load", () => {
+  const user = localStorage.getItem("loggedInUser");
+  const navContainer = document.querySelector(".navbar-nav");
+
+  if (!navContainer) return; // if navbar not found, skip
+
+  // Find existing Login/Signup button
+  const existingButton = navContainer.querySelector(".btn.btn-black.ms-2");
+
+  // If user is logged in
+  if (user) {
+    // Replace Login/Signup with Logout
+    if (existingButton) existingButton.remove();
+
+    const logoutItem = document.createElement("li");
+    logoutItem.classList.add("nav-item");
+    logoutItem.innerHTML = `
+      <a href="#" class="btn btn-black ms-2" id="logoutBtn">Logout</a>
+    `;
+    navContainer.appendChild(logoutItem);
+
+    // Logout logic
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      localStorage.removeItem("loggedInUser");
+      alert("Logged out successfully!");
+      window.location.reload(); // refresh to update navbar
+    });
+
+  } else {
+    // If not logged in → make sure Login/Signup button exists
+    if (!existingButton) {
+      const loginItem = document.createElement("li");
+      loginItem.classList.add("nav-item");
+      loginItem.innerHTML = `
+        <a href="login.html" class="btn btn-black ms-2">Login/Signup</a>
+      `;
+      navContainer.appendChild(loginItem);
+    }
+  }
+});
+</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

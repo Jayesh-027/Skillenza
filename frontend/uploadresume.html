@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Upload Resume - Skillenza</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+      <a class="navbar-brand fw-bold fs-4" href="index.html">SKILLENZA</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link " href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="jobs.html">Job Search</a></li>
+          <li class="nav-item"><a class="nav-link" href="uploadresume.html">Upload Resume</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html">About Us</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact Us</a></li>
+          <li class="nav-item"><a class="btn btn-black ms-2" href="login.html">Login/Signup</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Upload Form -->
+<div class="upload-container">
+  <h3 class="text-center mb-4">Upload Your Resume</h3>
+
+  <form id="resumeForm" onsubmit="return false;">
+    <div class="mb-3">
+      <label for="fullName" class="form-label">Full Name</label>
+      <input type="text" class="form-control" id="fullName" required />
+    </div>
+    <div class="mb-3">
+      <label for="emailAddress" class="form-label">Email Address</label>
+      <input type="email" class="form-control" id="emailAddress" required />
+    </div>
+    <div class="mb-3">
+      <label for="resumeFile" class="form-label">Upload Resume (PDF)</label>
+      <input class="form-control" type="file" id="resumeFile" accept=".pdf"  required />
+      <div class="form-text" id="fileNameDisplay"></div>
+    </div>
+    <button id="submitBtn" class="btn btn-black w-100" type="button">Submit Resume</button>
+  </form>
+</div>
+
+  <script>
+    // User Auth Check
+    window.onload = function () {
+      const user = localStorage.getItem("loggedInUser");
+      const loginBtn = document.getElementById("loginBtn");
+      const userDropdown = document.getElementById("userDropdown");
+      const userEmail = document.getElementById("userEmail");
+
+      if (user) {
+        loginBtn.style.display = "none";
+        userDropdown.style.display = "block";
+        userEmail.textContent = user;
+      }
+    };
+
+    function logout() {
+      localStorage.removeItem("loggedInUser");
+      window.location.reload();
+    }
+
+    // Resume Upload Handling
+    document.getElementById("resumeFile").addEventListener("change", function () {
+      const file = this.files[0];
+      if (file) {
+        document.getElementById("fileNameDisplay").textContent = `Selected File: ${file.name}`;
+      }
+    });
+  </script>
+
+<script>
+document.getElementById("submitBtn").addEventListener("click", async () => {
+  const name = document.getElementById("fullName").value.trim();
+  const email = document.getElementById("emailAddress").value.trim();
+  const file = document.getElementById("resumeFile").files[0];
+  const messageBox = document.getElementById("uploadMessage");
+
+  if (!name || !email || !file) {
+    messageBox.textContent = "⚠️ Please fill all fields and select a file.";
+    messageBox.className = "mt-3 text-center fw-bold text-danger";
+    messageBox.style.display = "block";
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("name", name);
+  formData.append("email", email);
+  formData.append("resume", file);
+
+  try {
+    const res = await fetch("http://localhost:5000/api/resume/upload", {
+      method: "POST",
+      body: formData
+    });
+    const data = await res.json();
+
+    messageBox.style.display = "block";
+
+    if (data.success) {
+      messageBox.textContent = "✅ Resume uploaded successfully!";
+      messageBox.className = "mt-3 text-center fw-bold text-success";
+    } else {
+      messageBox.textContent = "❌ " + (data.message || "Upload failed");
+      messageBox.className = "mt-3 text-center fw-bold text-danger";
+    }
+
+    // Reset form after showing message
+    //document.getElementById("resumeForm").reset();
+    //document.getElementById("fileNameDisplay").textContent = "";
+
+  } catch (err) {
+    messageBox.textContent = "⚠️ Error connecting to server.";
+    messageBox.className = "mt-3 text-center fw-bold text-danger";
+    messageBox.style.display = "block";
+  }
+});
+</script>
+
+<script>
+window.addEventListener("load", () => {
+  const user = localStorage.getItem("loggedInUser");
+  const form = document.getElementById("resumeForm");
+  const container = document.querySelector(".upload-container");
+
+  if (!user && form && container) {
+    form.style.filter = "blur(6px)";
+    form.style.pointerEvents = "none";
+    form.style.opacity = "0.4";
+    container.style.position = "relative";
+
+    const overlay = document.createElement("div");
+    overlay.className = "login-overlay";
+    overlay.innerHTML = `
+      <h4>Login Required</h4>
+      <p>Please sign in to upload your resume and access exclusive job opportunities.</p>
+      <a href="login.html" class="btn">Login to Continue</a>
+    `;
+
+    container.appendChild(overlay);
+  }
+});
+</script>
+
+<script>
+// ==================== NAVBAR LOGIN/LOGOUT HANDLER ====================
+window.addEventListener("load", () => {
+  const user = localStorage.getItem("loggedInUser");
+  const navContainer = document.querySelector(".navbar-nav");
+
+  if (!navContainer) return; // if navbar not found, skip
+
+  // Find existing Login/Signup button
+  const existingButton = navContainer.querySelector(".btn.btn-black.ms-2");
+
+  // If user is logged in
+  if (user) {
+    // Replace Login/Signup with Logout
+    if (existingButton) existingButton.remove();
+
+    const logoutItem = document.createElement("li");
+    logoutItem.classList.add("nav-item");
+    logoutItem.innerHTML = `
+      <a href="#" class="btn btn-black ms-2" id="logoutBtn">Logout</a>
+    `;
+    navContainer.appendChild(logoutItem);
+
+    // Logout logic
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      localStorage.removeItem("loggedInUser");
+      alert("Logged out successfully!");
+      window.location.reload(); // refresh to update navbar
+    });
+
+  } else {
+    // If not logged in → make sure Login/Signup button exists
+    if (!existingButton) {
+      const loginItem = document.createElement("li");
+      loginItem.classList.add("nav-item");
+      loginItem.innerHTML = `
+        <a href="login.html" class="btn btn-black ms-2">Login/Signup</a>
+      `;
+      navContainer.appendChild(loginItem);
+    }
+  }
+});
+</script>
+
+
+
+</body>
+</html>

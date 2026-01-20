@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Us - Skillenza</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+      <a class="navbar-brand fw-bold fs-4" href="index.html">SKILLENZA</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link " href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="jobs.html">Job Search</a></li>
+          <li class="nav-item"><a class="nav-link" href="uploadresume.html">Upload Resume</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html">About Us</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact Us</a></li>
+          <li class="nav-item"><a class="btn btn-black ms-2" href="login.html">Login/Signup</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <!-- Contact Form -->
+  <div class="contact-container">
+    <h3 class="text-center mb-4">Contact Us</h3>
+    <form id="contactForm">
+      <div class="mb-3">
+        <label for="contactName" class="form-label">Name</label>
+        <input type="text" class="form-control" id="contactName" required />
+      </div>
+      <div class="mb-3">
+        <label for="contactEmail" class="form-label">Email</label>
+        <input type="email" class="form-control" id="contactEmail" required />
+      </div>
+      <div class="mb-3">
+        <label for="contactMessage" class="form-label">Message</label>
+        <textarea class="form-control" id="contactMessage" rows="4" required></textarea>
+      </div>
+      <button type="submit" class="btn btn-black w-100">Send Message</button>
+    </form>
+    <div id="contactSuccess" class="mt-3 text-success text-center" style="display: none;">
+      ✅ Thank you for reaching out! We'll get back to you soon.
+    </div>
+  </div>
+
+  <!-- JS -->
+  <script>
+    window.onload = function () {
+      const user = localStorage.getItem("loggedInUser");
+      const loginBtn = document.getElementById("loginBtn");
+      const userDropdown = document.getElementById("userDropdown");
+      const userEmail = document.getElementById("userEmail");
+
+      if (user) {
+        loginBtn.style.display = "none";
+        userDropdown.style.display = "block";
+        userEmail.textContent = user;
+      }
+    };
+
+    function logout() {
+      localStorage.removeItem("loggedInUser");
+      window.location.reload();
+    }
+
+    document.getElementById("contactForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      document.getElementById("contactSuccess").style.display = "block";
+      this.reset();
+    });
+  </script>
+<script>
+// ==================== NAVBAR LOGIN/LOGOUT HANDLER ====================
+window.addEventListener("load", () => {
+  const user = localStorage.getItem("loggedInUser");
+  const navContainer = document.querySelector(".navbar-nav");
+
+  if (!navContainer) return; // if navbar not found, skip
+
+  // Find existing Login/Signup button
+  const existingButton = navContainer.querySelector(".btn.btn-black.ms-2");
+
+  // If user is logged in
+  if (user) {
+    // Replace Login/Signup with Logout
+    if (existingButton) existingButton.remove();
+
+    const logoutItem = document.createElement("li");
+    logoutItem.classList.add("nav-item");
+    logoutItem.innerHTML = `
+      <a href="#" class="btn btn-black ms-2" id="logoutBtn">Logout</a>
+    `;
+    navContainer.appendChild(logoutItem);
+
+    // Logout logic
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      localStorage.removeItem("loggedInUser");
+      alert("Logged out successfully!");
+      window.location.reload(); // refresh to update navbar
+    });
+
+  } else {
+    // If not logged in → make sure Login/Signup button exists
+    if (!existingButton) {
+      const loginItem = document.createElement("li");
+      loginItem.classList.add("nav-item");
+      loginItem.innerHTML = `
+        <a href="login.html" class="btn btn-black ms-2">Login/Signup</a>
+      `;
+      navContainer.appendChild(loginItem);
+    }
+  }
+});
+</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
