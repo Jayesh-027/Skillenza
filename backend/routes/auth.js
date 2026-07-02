@@ -42,12 +42,12 @@ passport.use(
 passport.serializeUser((user, done) => done(null, user));
 passport.deserializeUser((user, done) => done(null, user));
 
-// =============== GOOGLE ROUTES ===============
+//GOOGLE ROUTES
 
 // Step 1: Start Google Auth
 router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
 
-// Step 2: Callback route (must match the one in .env and Google Console)
+// Step 2: Callback routee)
 router.get(
   "/google/callback",
   passport.authenticate("google", { failureRedirect: "/login.html" }),
@@ -75,7 +75,7 @@ router.post("/signup", (req, res) => {
   });
 });
 
-// =============== EMAIL/PASSWORD LOGIN ===============
+//EMAIL/PASSWORD LOGIN
 router.post("/login", (req, res) => {
   const { email, password } = req.body;
   db.query("SELECT * FROM users WHERE email = ?", [email], (err, result) => {
